@@ -103,12 +103,12 @@
 
                 var c = new L.Control.Coordinates();  
                 c.addTo(map);
-                
+
                  map.on('click', function(e) {
 	              c.setCoordinates(e);
                 });
 
-                
+                 
                 
                 // Popup and marker
                const  popb = L.marker([60.48868922712431, 15.431371459960938],{icon: blackIcon}).addTo(mymap).bindPopup("Intro to Leaflet");
