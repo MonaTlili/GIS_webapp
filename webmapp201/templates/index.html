@@ -55,7 +55,7 @@
             <button id="l1">layer1</button>
             <button id="l2">layer2</button>
             <button id="btnFalun" class="btn btn-primary btn-block">ZoomToFalun</button>
-            <button id="btnHome">ZoomToHome</button>
+            <button id="btnSater">ZoomToSäter</button>
   
        </div>
        
@@ -85,9 +85,9 @@
                 var sidebar = L.control.sidebar("sidebar", {position: "left"});
                 mymap.addControl(sidebar);
                 
-               const  polyLine = L.control.polylineMeasure().addTo(mymap);
+                const  polyLine = L.control.polylineMeasure().addTo(mymap);
 
-               var iconUrls = {
+                var iconUrls = {
                     blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
                     pooIcon: "{{ url_for('static', filename='poop.svg') }}"
                 };   
@@ -99,24 +99,15 @@
                     popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
                 });
 
-                // Coordinate controll
-
-                var c = new L.Control.Coordinates();  
-                c.addTo(map);
-
-                 map.on('click', function(e) {
-	              c.setCoordinates(e);
-                });
-
-                 
+               
                 
                 // Popup and marker
-               const  popb = L.marker([60.48868922712431, 15.431371459960938],{icon: blackIcon}).addTo(mymap).bindPopup("Intro to Leaflet");
+                //const  popb = L.marker([60.48868922712431, 15.431371459960938],{icon: blackIcon}).addTo(mymap).bindPopup("Intro to Leaflet");
                 
-               const popf= L.marker([60.605898734439805,15.628023594617845], {icon:blackIcon}).addTo(mymap).bindPopup("<h3>Falun Museum</h3><img src={{ url_for('static', filename='img/museum.jpg') }} width='150px'>");
+                //const popf= L.marker([60.605898734439805,15.628023594617845], {icon:blackIcon}).addTo(mymap).bindPopup("<h3>Falun Museum</h3><img src={{ url_for('static', filename='img/museum.jpg') }} width='150px'>");
 
                 // Test Marker, hur ska man göra detta utan GeoJSon?
-              const  popa = L.marker([60.45, 15.18],{icon: blackIcon}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Very cute cat</h3><img src={{ url_for('static', filename='images/cute-cat-photos-1593441022.jpg) }}' width='150px'>");
+                const  popSater = L.marker([15.746372005989052,60.34640783388847],{icon: blackIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/sater.jpg') }} width='150px'>");
 
                 // Test Cirle
                 const cirlce_test = L.circle([60.45, 15.18], {
@@ -129,64 +120,57 @@
 
 
                 // Test Polygon
-              const polygon_test = L.polygon([
-              [
-              
-              60.46007591615924,
-              15.176043308090982
-            ],
-            [
-              
-              60.457408526862736,
-              15.171729152143484
-            ],
-            [
-              
-              60.45575283621142,
-              15.178326729635586
-            ],
-            [
-              
-              60.46007591615924,
-              15.176043308090982
-            ] 
-          ]).addTo(mymap).bindPopup("Home").bindPopup("<h3>Noraåbruk</h3><img src={{ url_for('static', filename='/images/noran.jpg') }} width='150px'>");
+                const polygon_test = L.polygon([
+                    [
+                    60.46007591615924,
+                    15.176043308090982
+                    ],
+                    [
+                    60.457408526862736,
+                    15.171729152143484
+                    ],
+                    [
+                    60.45575283621142,
+                    15.178326729635586
+                    ],
+                    [
+                    60.46007591615924,
+                    15.176043308090982
+                    ] 
+                ]).addTo(mymap).bindPopup("Home").bindPopup("<h3>Noraåbruk</h3><img src={{ url_for('static', filename='/images/noran.jpg') }} width='150px'>");
 
+                // Test line
+                var points =  [
+                    [60.45276293163599, 15.183014130750507],
+                    [60.453015853180915, 15.191843007541138]
+                ];
 
+                var Line_test = L.polyline(points, { color: 'red'}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Skogsväg</h3><img src={{ url_for('static', filename='/images/skogsvag.jpg') }} width='150px'>");
+                    
+                        document.getElementById("l1").addEventListener("click", sweden);
 
-          // Test line
-
-          var points =  [
-          [60.45276293163599, 15.183014130750507],
-          [60.453015853180915, 15.191843007541138]
-        ];
-
-        var Line_test = L.polyline(points, { color: 'red'}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Skogsväg</h3><img src={{ url_for('static', filename='/images/skogsvag.jpg') }} width='150px'>");
-               
-                document.getElementById("l1").addEventListener("click", sweden);
-
-		          function sweden(){
-                      if(mymap.hasLayer(swedishlayer)){
-                          mymap.removeLayer(swedishlayer);
-                         
-                          sidebar.hide();
-                          
-                      } else {
-                          swedishlayer.addTo(mymap);
-                          
-                          sidebar.show();
-                      }
-			
-		          };
+                        function sweden(){
+                            if(mymap.hasLayer(swedishlayer)){
+                                mymap.removeLayer(swedishlayer);
+                                
+                                sidebar.hide();
+                                
+                            } else {
+                                swedishlayer.addTo(mymap);
+                                
+                                sidebar.show();
+                            }
+                    
+                        };
                 
                 countrieslayer = L.geoJson(countries, {
-			    onEachFeature: function (feature, layer) {
-				layer.bindPopup(feature.properties.name);
-			     }
-		         });
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties.name);
+			            }
+		        });
 
 
-		      document.getElementById("l2").addEventListener("click", c_layers);
+		        document.getElementById("l2").addEventListener("click", c_layers);
                 
                 function c_layers(){
                     if(mymap.hasLayer(countrieslayer)){
@@ -194,17 +178,19 @@
                     } 
                     else {
                         countrieslayer.addTo(mymap);
-                        }
-                    };
+                    }
+                };
                 
                 $("#btnFalun").click(function(){
                     mymap.setView([60.605866810126194, 15.628008842468262], 17);
                 })
 
 
-                $("#btnHome").click(function(){
-                    mymap.setView([60.45330820861574, 15.180906249746528], 17);
+                $("#btnSater").click(function(){
+                    mymap.setView([15.746372005989052,60.34640783388847], 17);
                 })
+
+                
                  
                 // Buffer
                             
