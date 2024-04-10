@@ -99,7 +99,12 @@
                     popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
                 });
 
-               
+                var pooIcon = L.icon({
+                    iconUrl: iconUrls.pooIcon,
+                    iconSize:     [32, 37], // size of the icon
+                    iconAnchor:   [32, 37], // point of the icon which will correspond to marker's location
+                    popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+                });
                 
                 // Popup and marker
                 //const  popb = L.marker([60.48868922712431, 15.431371459960938],{icon: blackIcon}).addTo(mymap).bindPopup("Intro to Leaflet");
@@ -107,45 +112,48 @@
                 //const popf= L.marker([60.605898734439805,15.628023594617845], {icon:blackIcon}).addTo(mymap).bindPopup("<h3>Falun Museum</h3><img src={{ url_for('static', filename='img/museum.jpg') }} width='150px'>");
 
                 // Test Marker, hur ska man göra detta utan GeoJSon?
-                const  popSater = L.marker([15.746372005989052,60.34640783388847],{icon: blackIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/sater.jpg') }} width='150px'>");
-
+                const  popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: pooIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
+                
                 // Test Cirle
                 const cirlce_test = L.circle([60.45, 15.18], {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
                     radius: 250,
-
                 }).addTo(mymap).bindPopup("Myr").bindPopup("<h3>Här finns en myr</h3><img src={{ url_for('static', filename='/images/myr.jpg') }} width='150px'>");
 
-
-                // Test Polygon
-                const polygon_test = L.polygon([
+               
+                const gustafsBrodPoly = L.polygon([
                     [
-                    60.46007591615924,
-                    15.176043308090982
+                    60.40405873387609, 15.596026646989579
                     ],
                     [
-                    60.457408526862736,
-                    15.171729152143484
+                    60.40418349349315, 15.596434885259788
                     ],
                     [
-                    60.45575283621142,
-                    15.178326729635586
+                    60.40433498667086, 15.59616874097313
                     ],
                     [
-                    60.46007591615924,
-                    15.176043308090982
+                    60.404436353035635, 15.595859742945398
+                    ],
+                    [
+                    60.404242531359486, 15.595568788598122
                     ] 
-                ]).addTo(mymap).bindPopup("Home").bindPopup("<h3>Noraåbruk</h3><img src={{ url_for('static', filename='/images/noran.jpg') }} width='150px'>");
+                ]).addTo(mymap).bindPopup("Gustafs bröd").bindPopup("<h3>Gustafs bröd</h3><img src={{ url_for('static', filename='/img/gustafs_brod.png') }} width='150px'>");
 
                 // Test line
-                var points =  [
-                    [60.45276293163599, 15.183014130750507],
-                    [60.453015853180915, 15.191843007541138]
+                const points =  [
+                    [60.338360351490955, 15.7607417838101],
+                    [60.338609894903215, 15.760586215682807],
+                    [60.338795723864074, 15.760366274537317],
+                    [60.34059820989227, 15.75711543699507],
+                    [60.340717664209045, 15.756777478649568],
+                    [60.34087428142849, 15.75619275706766]
+
                 ];
 
-                var Line_test = L.polyline(points, { color: 'red'}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Skogsväg</h3><img src={{ url_for('static', filename='/images/skogsvag.jpg') }} width='150px'>");
+                const asenVagLine = L.polyline(points, { color: 'red'}).addTo(mymap).bindPopup("Åsen vägen").bindPopup("<h3>Åsen vägen</h3><img src={{ url_for('static', filename='/src/images/skogsvag.jpg') }} width='150px'>");
+
                     
                         document.getElementById("l1").addEventListener("click", sweden);
 
@@ -187,10 +195,10 @@
 
 
                 $("#btnSater").click(function(){
-                    mymap.setView([15.746372005989052,60.34640783388847], 17);
+                    mymap.setView([60.34640783388847, 15.746372005989052], 17);
                 })
 
-                
+               
                  
                 // Buffer
                             
