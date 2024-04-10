@@ -9,8 +9,12 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='src/plugins/L.Control.Zoomslider.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='src/plugins/L.Control.Sidebar.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='src/plugins/Leaflet.PolylineMeasure.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='src/plugins/Control.Coordinates.css') }}">
+        
         <link rel="stylesheet" href="{{ url_for('static', filename='dist/MarkerCluster.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='dist/MarkerCluster.Default.css') }}">
+     
+        
         
         <script src="{{ url_for('static', filename='src/leaflet-src.js') }}"></script>
         <script src="{{ url_for('static', filename='src/jquery-3.6.0.min.js') }}"></script>
@@ -18,9 +22,12 @@
         <script src="{{ url_for('static', filename='src/plugins/L.Control.Zoomslider.js') }}"></script>
         <script src="{{ url_for('static', filename='src/plugins/L.Control.Sidebar.js') }}"></script>
         <script src="{{ url_for('static', filename='src/plugins/Leaflet.PolylineMeasure.js') }}"></script>
+        <script src="{{ url_for('static', filename='src/plugins/Control.Coordinates.js') }}"></script>
+
         <script src="{{ url_for('static', filename='swedish_counties.js') }}"></script>
         <script src="{{ url_for('static', filename='countries.js') }}"></script>
-        
+        <script src="{{ url_for('static', filename='fuel.js') }}"></script>
+        <script src="{{ url_for('static', filename='supermarket.js') }}"></script>
        
         <style>
             #mapdiv {
@@ -91,6 +98,17 @@
                     iconAnchor:   [32, 37], // point of the icon which will correspond to marker's location
                     popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
                 });
+
+                // Coordinate controll
+
+                var c = new L.Control.Coordinates();  
+                c.addTo(map);
+                
+                 map.on('click', function(e) {
+	              c.setCoordinates(e);
+                });
+
+                
                 
                 // Popup and marker
                const  popb = L.marker([60.48868922712431, 15.431371459960938],{icon: blackIcon}).addTo(mymap).bindPopup("Intro to Leaflet");
