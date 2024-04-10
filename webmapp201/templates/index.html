@@ -80,10 +80,13 @@
                 
                const  polyLine = L.control.polylineMeasure().addTo(mymap);
 
-
+               var iconUrls = {
+                    blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
+                    pooIcon: "{{ url_for('static', filename='poop.svg') }}"
+                };   
                             
                 var blackIcon = L.icon({
-                    iconUrl: "../static/map-marker.svg",
+                    iconUrl: iconUrls.blackIcon,
                     iconSize:     [32, 37], // size of the icon
                     iconAnchor:   [32, 37], // point of the icon which will correspond to marker's location
                     popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
@@ -92,10 +95,10 @@
                 // Popup and marker
                const  popb = L.marker([60.48868922712431, 15.431371459960938],{icon: blackIcon}).addTo(mymap).bindPopup("Intro to Leaflet");
                 
-               const popf= L.marker([60.605898734439805,15.628023594617845], {icon:blackIcon}).addTo(mymap).bindPopup("<h3>Falun Museum</h3><img src= '../static/img/museum.jpg' width='150px'>");
+               const popf= L.marker([60.605898734439805,15.628023594617845], {icon:blackIcon}).addTo(mymap).bindPopup("<h3>Falun Museum</h3><img src={{ url_for('static', filename='img/museum.jpg') }} width='150px'>");
 
                 // Test Marker, hur ska man göra detta utan GeoJSon?
-              const  popa = L.marker([60.45, 15.18],{icon: blackIcon}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Very cute cat</h3><img src='../static/images/cute-cat-photos-1593441022.jpg' width='150px'>");
+              const  popa = L.marker([60.45, 15.18],{icon: blackIcon}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Very cute cat</h3><img src={{ url_for('static', filename='images/cute-cat-photos-1593441022.jpg) }}' width='150px'>");
 
                 // Test Cirle
                 const cirlce_test = L.circle([60.45, 15.18], {
@@ -104,7 +107,7 @@
                     fillOpacity: 0.5,
                     radius: 250,
 
-                }).addTo(mymap).bindPopup("Myr").bindPopup("<h3>Här finns en myr</h3><img src='../static/images/myr.jpg' width='150px'>");
+                }).addTo(mymap).bindPopup("Myr").bindPopup("<h3>Här finns en myr</h3><img src={{ url_for('static', filename='/images/myr.jpg') }} width='150px'>");
 
 
                 // Test Polygon
@@ -129,7 +132,7 @@
               60.46007591615924,
               15.176043308090982
             ] 
-          ]).addTo(mymap).bindPopup("Home").bindPopup("<h3>Noraåbruk</h3><img src='../static/images/noran.jpg' width='150px'>");
+          ]).addTo(mymap).bindPopup("Home").bindPopup("<h3>Noraåbruk</h3><img src={{ url_for('static', filename='/images/noran.jpg') }} width='150px'>");
 
 
 
@@ -140,11 +143,8 @@
           [60.453015853180915, 15.191843007541138]
         ];
 
-        var Line_test = L.polyline(points, { color: 'red'}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Skogsväg</h3><img src='../static/images/skogsvag.jpg' width='150px'>");
-
-        
-
-                                
+        var Line_test = L.polyline(points, { color: 'red'}).addTo(mymap).bindPopup("Home").bindPopup("<h3>Skogsväg</h3><img src={{ url_for('static', filename='/images/skogsvag.jpg') }} width='150px'>");
+               
                 document.getElementById("l1").addEventListener("click", sweden);
 
 		          function sweden(){
@@ -179,8 +179,6 @@
                         }
                     };
                 
-                
-                
                 $("#btnFalun").click(function(){
                     mymap.setView([60.605866810126194, 15.628008842468262], 17);
                 })
@@ -189,9 +187,7 @@
                 $("#btnHome").click(function(){
                     mymap.setView([60.45330820861574, 15.180906249746528], 17);
                 })
-                
-                
-                
+                 
                 // Buffer
                             
   /*              sample1.addTo(mymap);
@@ -204,9 +200,7 @@
                     
   
             });
-            
-
-            
+               
        </script>
     </body>
 </html>
