@@ -77,7 +77,7 @@
             
            
             $(document).ready(function(){
-                mymap = L.map("mapdiv", {center:[60.48868922712431, 15.421371459960938], zoom:13});
+                mymap = L.map("mapdiv", {center:[60.34640783388847, 15.746372005989052], zoom:13});
                 lyrOSM= L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
                 mymap.addLayer(lyrOSM);
                 
@@ -86,10 +86,6 @@
                 
                 var sidebar = L.control.sidebar("sidebar", {position: "left"});
                 mymap.addControl(sidebar);
-
-                
-                
-                const  polyLine = L.control.polylineMeasure().addTo(mymap);
 
                 var iconUrls = {
                     blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
@@ -146,15 +142,17 @@
                     sidebar.hide();
                 });  
 
+                let polyLine = L.control.polylineMeasure().addTo(mymap);
+
                 const saterLines = [
-                    [60.34219053393169, 15.711821630690526],
-                    [60.34709575205177, 15.75163681099822],
-                    [60.346646945534005, 15.740775937986164],
-                    [60.350030240931474, 15.759631888742012],
-                    [60.345466899686755, 15.746454147785553]
+                    {lat: 60.34219053393169, lng:15.711821630690526},
+                    {lat: 60.34709575205177, lng: 15.75163681099822},
+                    {lat: 60.346646945534005, lng: 15.740775937986164},
+                    {lat: 60.350030240931474, lng: 15.759631888742012},
+                    {lat: 60.345466899686755, lng: 15.746454147785553}
                 ];
 
-                //polyline.seed(saterLines);
+                polyLine.seed([saterLines]);
                     
                 const gustafsBrodPoly = L.polygon([
                     [60.40405873387609, 15.596026646989579],
