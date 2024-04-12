@@ -57,8 +57,6 @@
             <button id="btnSater" class="btn btn-primary btn-block">ZoomToSäter</button>
             <button id="btnSaterAsenvagen" class="btn btn-primary btn-block">ZoomToÅsenvägen</button>
             <button id="btnBagarn" class="btn btn-primary btn-block">ZoomToBagarn</button>
-
-  
        </div>
        
        <div id="sidebar"><h1>Information</h1>
@@ -142,14 +140,15 @@
                     sidebar.hide();
                 });  
 
-                let polyLine = L.control.polylineMeasure().addTo(mymap);
+                let polyLine = L.control.polylineMeasure({showBearings:true, clearMeasurementsOnStop: false, showUnitControl: true}).addTo(mymap);
 
                 const saterLines = [
                     {lat: 60.34219053393169, lng:15.711821630690526},
-                    {lat: 60.34709575205177, lng: 15.75163681099822},
                     {lat: 60.346646945534005, lng: 15.740775937986164},
                     {lat: 60.350030240931474, lng: 15.759631888742012},
-                    {lat: 60.345466899686755, lng: 15.746454147785553}
+                    {lat: 60.34709575205177, lng: 15.75163681099822},
+                    {lat: 60.345466899686755, lng: 15.746454147785553},
+                    {lat: 60.34219053393169, lng:15.711821630690526}
                 ];
 
                 polyLine.seed([saterLines]);
@@ -175,35 +174,43 @@
 
                         document.getElementById("l1").addEventListener("click", sweden);
 
-                        function sweden(){
-                            if(mymap.hasLayer(swedishlayer)){
-                                mymap.removeLayer(swedishlayer);
-                                
-                                sidebar.hide();
-                                
-                            } else {
-                                swedishlayer.addTo(mymap);
-                                
-                                sidebar.show();
-                            }
+                function sweden(){
+                    if(mymap.hasLayer(swedishlayer)){
+                        mymap.removeLayer(swedishlayer);
+                        
+                        sidebar.hide();
+                        
+                    } else {
+                        swedishlayer.addTo(mymap);
+                        
+                        sidebar.show();
+                    }
                     
                 };
-
-                // Test Cirle
-                const cirlce_test = L.circle([60.45, 15.18], {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.5,
-                    radius: 250,
-                }).addTo(mymap).bindPopup("Myr").bindPopup("<h3>Här finns en myr</h3><img src={{ url_for('static', filename='/images/myr.jpg') }} width='150px'>");
-                
+ 
                 countrieslayer = L.geoJson(countries, {
                     onEachFeature: function (feature, layer) {
                         layer.bindPopup(feature.properties.name);
 			            }
 		        });
                 
-                
+                const supermarketLayer = L.geoJson(supermarket, {
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties.name).addTo(mymap);
+
+                        const buffer = turf.buffer(feature, 1, {units: 'kilometers'});
+
+                        L.geoJSON(buffer, {
+                            style:{
+                                color:'orange', 
+                                dashArray:'10', 
+                                fillOpacity:0.3
+                            }
+                        }).addTo(mymap);
+                    }
+                }).addTo(mymap);
+
+
 		        document.getElementById("l2").addEventListener("click", c_layers);
                 
                 function c_layers(){
@@ -214,8 +221,8 @@
                         countrieslayer.addTo(mymap);
                     }
                 };
-                // setView max 18
 
+                // setView max 18
                 $("#btnSater").click(function(){
                     mymap.setView([60.34640783388847, 15.746372005989052], 15);
                 })
@@ -227,7 +234,6 @@
                 $("#btnBagarn").click(function(){
                     mymap.setView([60.40433498667086, 15.59616874097313], 18);
                 })
-
 
                 // Buffer
                             
