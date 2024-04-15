@@ -17,6 +17,7 @@
          
         <script src="{{ url_for('static', filename='src/leaflet-src.js') }}"></script>
         <script src="{{ url_for('static', filename='src/jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='dist/leaflet.markercluster-src.js') }}"></script>
         <script src="{{ url_for('static', filename='src/turf.min.js') }}" charset="utf-8"></script>
         <script src="{{ url_for('static', filename='src/plugins/L.Control.Zoomslider.js') }}"></script>
         <script src="{{ url_for('static', filename='src/plugins/L.Control.Sidebar.js') }}"></script>
@@ -56,6 +57,7 @@
             <button id="btnSater" class="btn btn-primary btn-block">ZoomToSäter</button>
             <button id="btnSaterAsenvagen" class="btn btn-primary btn-block">ZoomToÅsenvägen</button>
             <button id="btnBagarn" class="btn btn-primary btn-block">ZoomToBagarn</button>
+            <button id="btnGlobe" class="btn btn-primary btn-block">ZoomToGlöben</button>
        </div>
        <!-- END BUTTONS -->
        
@@ -81,8 +83,14 @@
                 lyrOSM= L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
                 mymap.addLayer(lyrOSM);
                 
-                
                 ctlZoomslider = L.control.zoomslider({position:"topright"}).addTo(mymap);
+
+                const controlCoords = new L.Control.Coordinates();
+                controlCoords.addTo(mymap);
+
+                mymap.on('click', function(e) {
+                    controlCoords.setCoordinates(e);
+                });
                 
                 var sidebar = L.control.sidebar("sidebar", {position: "left"});
                 mymap.addControl(sidebar);
@@ -284,14 +292,37 @@
 
                 // IMAGE OVERLAY
 
-                const latLngBounds = L.latLngBounds([[59.29318278742497, 18.0832186925417], [59.29318278742497, 18.08326160788502], [59.29362655346131, 18.082253097316986],[59.29362655346131, 18.0841091859156]]);
+                const globenBounds = L.latLngBounds([
+                    [59.2940,  18.0823], 
+                    [59.2932,  18.0841]
+                ]);
 
-                const imageOverlayGloben = L.imageOverlay(imageUrl, latLngBounds, {
+                const imageOverlayGloben = L.imageOverlay("{{url_for('static', filename='/img/GLOBEN.png')}}", globenBounds, {
                     opacity: 0.8,
                     //errorOverlayUrl: errorOverlayUrl,
                     alt: 'Globen',
                     interactive: true
                 }).addTo(mymap);
+
+                // Add “fuel.geoJSON” file to the map. 
+                // Then add “Leaflet.markercluster” plugin to your web application and display the data from fuel.geoJSON.
+                // Display name of the fuel station when clicked on the marker.
+
+                const fuelLayer = L.markerClusterGroup();
+
+                L.geoJson(fuel, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.name) {
+                            layer.bindPopup(feature.properties.name);
+                        }
+                    },
+                    pointToLayer: function (feature, latlng) {
+
+                        return L.marker(latlng, {icon: pooIcon});
+                    }
+                }).addTo(fuelLayer);
+
+                mymap.addLayer(fuelLayer);
 
                 // setView max 18
                 $("#btnSater").click(function(){
@@ -304,6 +335,10 @@
 
                 $("#btnBagarn").click(function(){
                     mymap.setView([60.40433498667086, 15.59616874097313], 18);
+                })
+
+                $("#btnGlobe").click(function(){
+                    mymap.setView([59.29356499477762, 18.083123473195176], 18);
                 })
 
                 // END BUTTON CLICK FUNCTIONS            
