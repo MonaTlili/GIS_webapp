@@ -14,8 +14,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='dist/MarkerCluster.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='dist/MarkerCluster.Default.css') }}">
      
-        
-        
+         
         <script src="{{ url_for('static', filename='src/leaflet-src.js') }}"></script>
         <script src="{{ url_for('static', filename='src/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ url_for('static', filename='src/turf.min.js') }}" charset="utf-8"></script>
@@ -50,7 +49,7 @@
     </head>
     <body>
        <div id="mapdiv" class="col-md-9"></div>
-       
+        <!-- BUTTONS -->
        <div id="side-bar" class="col-md-3"><h2>My Map</h2>
             <button id="l1">layer1</button>
             <button id="l2">layer2</button>
@@ -58,9 +57,12 @@
             <button id="btnSaterAsenvagen" class="btn btn-primary btn-block">ZoomToÅsenvägen</button>
             <button id="btnBagarn" class="btn btn-primary btn-block">ZoomToBagarn</button>
        </div>
+       <!-- END BUTTONS -->
        
+       <!-- SIDEBAR -->
        <div id="sidebar"><h1>Information</h1>
        </div>
+       <!-- END SIDEBAR -->
         
        <script>
             var mymap; 
@@ -84,6 +86,8 @@
                 
                 var sidebar = L.control.sidebar("sidebar", {position: "left"});
                 mymap.addControl(sidebar);
+                
+                // ICONS
 
                 var iconUrls = {
                     blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
@@ -103,6 +107,9 @@
                     iconAnchor:   [32, 37], // point of the icon which will correspond to marker's location
                     popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
                 });
+
+                // END ICONS
+                // MARKERS
 
                 const popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: blackIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
                 
@@ -136,9 +143,16 @@
                     sidebar.setContent("<h3>Welcome to Säters kyrka!</h3><p>Säters kyrka i Säter är församlingskyrka för Säterbygdens församling i Västerås stift. Den nuvarande kyrkan byggdes 1778–1779. Tornet byttes dock ut 1806–1807, då det stod på ostadig grund. 1811 fastställdes hur orgelfasaden och altaret skulle se ut.<br><br>Tidigare stod en annan stenkyrka på platsen. Den invigdes på hösten 1635 och ersatte då en träkyrka som var i bruk 1628–1635. Det visade sig dock att denna kyrka var undermåligt byggd och man rev den år 1778. <br><br> I anslutning till kyrkan, på andra sidan gatan, ligger församlingshemmet Coriandergården. Denna har fått sitt namn av Säters första kyrkoherde Magnus Andræ Coriander, verksam 1636–1663, vilken även har gett namn åt kyrkokören Corianderkören. <p><img src={{ url_for('static', filename='img/saterskyrka.png') }} width='150px'>");
                 });
 
+                // END MARKERS
+                // CLICK FUNCTION TO HIDE SIDEBAR
+
                 mymap.on('click', function() {
                     sidebar.hide();
-                });  
+                });
+                
+                // END CLICK FUNCTION TO HIDE SIDEBAR
+
+                // POLYLINE MEASURE LINES
 
                 let polyLine = L.control.polylineMeasure({showBearings:true, clearMeasurementsOnStop: false, showUnitControl: true}).addTo(mymap);
 
@@ -152,6 +166,9 @@
                 ];
 
                 polyLine.seed([saterLines]);
+
+                // END POLYLINE MEASURE LINES
+                // POLYGON
                     
                 const gustafsBrodPoly = L.polygon([
                     [60.40405873387609, 15.596026646989579],
@@ -160,6 +177,9 @@
                     [60.404436353035635, 15.595859742945398],
                     [60.404242531359486, 15.595568788598122] 
                 ]).addTo(mymap).bindPopup("Gustafs bröd").bindPopup("<h3>Gustafs bröd</h3><img src={{ url_for('static', filename='/img/gustafs_brod.png') }} width='150px'>");
+
+                // END POLYGON
+                // POLYLINE
 
                 const asenvag_points =  [
                     [60.338360351490955, 15.7607417838101],
@@ -172,7 +192,10 @@
 
                 const asenVagLine = L.polyline(asenvag_points, { color: 'red'}).addTo(mymap).bindPopup("Åsen vägen").bindPopup("<h3>Åsen vägen</h3><img src={{ url_for('static', filename='/src/images/skogsvag.jpg') }} width='150px'>");
 
-                        document.getElementById("l1").addEventListener("click", sweden);
+                // END POLYLINE
+                // VIJAYS SWEDEN LAYER
+
+                document.getElementById("l1").addEventListener("click", sweden);
 
                 function sweden(){
                     if(mymap.hasLayer(swedishlayer)){
@@ -187,29 +210,15 @@
                     }
                     
                 };
+
+                // END VIJAYS SWEDEN LAYER
+                // VIJAYS COUNTRIES LAYER
  
                 countrieslayer = L.geoJson(countries, {
                     onEachFeature: function (feature, layer) {
                         layer.bindPopup(feature.properties.name);
 			            }
 		        });
-                
-                const supermarketLayer = L.geoJson(supermarket, {
-                    onEachFeature: function (feature, layer) {
-                        layer.bindPopup(feature.properties.name).addTo(mymap);
-
-                        const buffer = turf.buffer(feature, 1, {units: 'kilometers'});
-
-                        L.geoJSON(buffer, {
-                            style:{
-                                color:'orange', 
-                                dashArray:'10', 
-                                fillOpacity:0.3
-                            }
-                        }).addTo(mymap);
-                    }
-                }).addTo(mymap);
-
 
 		        document.getElementById("l2").addEventListener("click", c_layers);
                 
@@ -221,6 +230,68 @@
                         countrieslayer.addTo(mymap);
                     }
                 };
+                
+                // END VIJAYS COUNTRIES LAYER
+                // SUPERMARKET FUNCTIONS
+
+                const supermarketBuffers = [];
+                
+                const supermarketLayer = L.geoJson(supermarket, {
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties.name).addTo(mymap);
+                        const buffer = turf.buffer(feature, 1, {units: 'kilometers'});
+                     
+                        let bufferLayer = L.geoJSON(buffer, {
+                            style:{
+                                color:'orange', 
+                                dashArray:'10', 
+                                fillOpacity:0.3
+                            }
+                        }).addTo(mymap);
+
+                        supermarketBuffers.push({
+                            feature: feature,
+                            layer: layer,
+                            buffer: buffer,
+                            bufferLayer: bufferLayer
+                        })
+
+                        layer.addTo(mymap); 
+                    }
+                    
+                });
+
+                supermarketBuffers.forEach((supermarket, index) => {
+                    let overlaps = false;
+                    supermarketBuffers.forEach((otherSupermarket, otherIndex) => {
+                        if (index !== otherIndex && turf.intersect(supermarket.buffer, otherSupermarket.buffer)) {
+                            overlaps = true;
+                        }   
+                    });
+
+                    if (!overlaps) {
+                        supermarket.bufferLayer.setStyle({
+                            color: 'purple',
+                            fillColor: 'purple',
+                            fillOpacity: 0.3
+                        });
+                        supermarket.layer.bindPopup(supermarket.feature.properties.name + " - Not overlapping"); 
+                    }   
+                });
+                
+                // END SUPERMARKET FUNCTIONS
+                // BUTTON CLICK FUNCTIONS
+
+                // IMAGE OVERLAY
+
+                const latLngBounds = L.latLngBounds([[59.29318278742497, 18.0832186925417], [59.29318278742497, 18.08326160788502], [59.29362655346131, 18.082253097316986],[59.29362655346131, 18.0841091859156]]);
+
+                const imageOverlayGloben = L.imageOverlay(imageUrl, latLngBounds, {
+                    opacity: 0.8,
+                    //errorOverlayUrl: errorOverlayUrl,
+                    alt: 'Globen',
+                    interactive: true
+                }).addTo(mymap);
 
                 // setView max 18
                 $("#btnSater").click(function(){
@@ -235,17 +306,8 @@
                     mymap.setView([60.40433498667086, 15.59616874097313], 18);
                 })
 
-                // Buffer
-                            
-  /*              sample1.addTo(mymap);
-                var s2 = sample1.toGeoJSON();
-                
-                var samplegeo = turf.buffer(s2, 0.5,{units: 'kilometers' });
-
-                var samplegeol = L.geoJSON(samplegeo, {style:{color:'yellow', dashArray:'5,5', fillOpacity:0.1}}).addTo(mymap);
-    */               
-            });
-               
+                // END BUTTON CLICK FUNCTIONS            
+            });            
        </script>
     </body>
 </html>
