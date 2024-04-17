@@ -308,6 +308,19 @@
                 // Then add “Leaflet.markercluster” plugin to your web application and display the data from fuel.geoJSON.
                 // Display name of the fuel station when clicked on the marker.
 
+                //const fuelLayer = L.markerClusterGroup(fuelStations);
+                //fuelLayer.addLayer(L.marker(getRandomLatLng(mymap)));
+                //mymap.addLayer(fuelLayer)
+
+                // fuelLayer = L.geoJson(fuel, {
+                //     onEachFeature: function (feature, layer) {
+                //         layer.bindPopup(feature.properties.name);
+                //         const fuelLayer = L.markerClusterGroup(fuel);
+                //         fuelLayer.addLayer(L.marker(getRandomLatLng(mymap)));
+                //         mymap.addLayer(fuelLayer) 
+			    //         }
+		        // });
+
                 const fuelLayer = L.markerClusterGroup();
 
                 L.geoJson(fuel, {
