@@ -99,27 +99,36 @@
 
                 var iconUrls = {
                     blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
-                    pooIcon: "{{ url_for('static', filename='poop.svg') }}"
+                    pumpIcon: "{{ url_for('static', filename='pump.svg') }}",
+                    cloudIcon: "{{ url_for('static', filename='cloud.svg') }}"
                 };   
                             
                 var blackIcon = L.icon({
                     iconUrl: iconUrls.blackIcon,
-                    iconSize:     [32, 37], // size of the icon
-                    iconAnchor:   [32, 37], // point of the icon which will correspond to marker's location
-                    popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+                    iconSize:     [32, 37], 
+                    iconAnchor:   [32, 37], 
+                    popupAnchor:  [0, -30] 
                 });
 
-                var pooIcon = L.icon({
-                    iconUrl: iconUrls.pooIcon,
-                    iconSize:     [32, 37], // size of the icon
-                    iconAnchor:   [32, 37], // point of the icon which will correspond to marker's location
-                    popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
+                var pumpIcon = L.icon({
+                    iconUrl: iconUrls.pumpIcon,
+                    iconSize:     [32, 37], 
+                    iconAnchor:   [32, 37],
+                    popupAnchor:  [0, -30] 
+                });
+
+                var cloudIcon = L.icon({
+                    iconUrl: iconUrls.cloudIcon,
+                    iconSize:     [32, 37], 
+                    iconAnchor:   [32, 37], 
+                    popupAnchor:  [0, -30] 
                 });
 
                 // END ICONS
                 // MARKERS
 
                 const popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: blackIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
+                
                 
                 const popMentalvardMuseum = L.marker([60.34219053393169, 15.711821630690526],{icon: blackIcon}).addTo(mymap);
                 popMentalvardMuseum.on('click', function(e){
@@ -331,11 +340,35 @@
                     },
                     pointToLayer: function (feature, latlng) {
 
-                        return L.marker(latlng, {icon: pooIcon});
+                        return L.marker(latlng, {icon: pumpIcon});
                     }
                 }).addTo(fuelLayer);
 
                 mymap.addLayer(fuelLayer);
+
+                var cities = [
+                    { name: "Falun", coords: [60.60580472861724, 15.63369720593686] },
+                    { name: "Borlänge", coords: [60.48368089294031, 15.430147102186696] },
+                    { name: "Gagnef", coords: [60.59086617909959, 15.07043173564424] },
+                    { name: "Hedemora", coords: [60.27764295995458, 15.985137188118204] },
+                    { name: "Avesta", coords: [60.145258163689, 16.172561789224062] }
+                ];
+
+                const apiKey = '348f0c4a77d2eebd3718ea3136e113a4';
+
+                cities.forEach(city => {
+                    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.coords[0]}&lon=${city.coords[1]}&appid=${apiKey}&units=metric`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => { 
+                            const temp = data.main.temp;
+                            const desc = data.weather[0].description;
+                            const iconCode = data.weather[0].icon;
+                            const iconUrl = `http://openweathermap.org/img/w/${iconCode}.png`;
+                            const marker = L.marker(city.coords, {icon: cloudIcon}).addTo(mymap);
+                            marker.bindPopup(`<h3>${city.name}</h3><p>Temperature: ${temp}°C<br>Description: ${desc}</p><img src="${iconUrl}">`);
+                        });
+                }); s
 
                 // setView max 18
                 $("#btnSater").click(function(){
