@@ -120,8 +120,8 @@
                 var cloudIcon = L.icon({
                     iconUrl: iconUrls.cloudIcon,
                     iconSize:     [32, 37], 
-                    iconAnchor:   [32, 37], 
-                    popupAnchor:  [0, -30] 
+                    iconAnchor:   [16, 37], 
+                    popupAnchor:  [0, -37] 
                 });
 
                 // END ICONS
@@ -297,9 +297,7 @@
                 });
                 
                 // END SUPERMARKET FUNCTIONS
-                // BUTTON CLICK FUNCTIONS
-
-                // IMAGE OVERLAY
+                // IMAGE OVERLAY GLOBEN
 
                 const globenBounds = L.latLngBounds([
                     [59.2940,  18.0823], 
@@ -308,27 +306,12 @@
 
                 const imageOverlayGloben = L.imageOverlay("{{url_for('static', filename='/img/GLOBEN.png')}}", globenBounds, {
                     opacity: 0.8,
-                    //errorOverlayUrl: errorOverlayUrl,
                     alt: 'Globen',
                     interactive: true
                 }).addTo(mymap);
 
-                // Add “fuel.geoJSON” file to the map. 
-                // Then add “Leaflet.markercluster” plugin to your web application and display the data from fuel.geoJSON.
-                // Display name of the fuel station when clicked on the marker.
-
-                //const fuelLayer = L.markerClusterGroup(fuelStations);
-                //fuelLayer.addLayer(L.marker(getRandomLatLng(mymap)));
-                //mymap.addLayer(fuelLayer)
-
-                // fuelLayer = L.geoJson(fuel, {
-                //     onEachFeature: function (feature, layer) {
-                //         layer.bindPopup(feature.properties.name);
-                //         const fuelLayer = L.markerClusterGroup(fuel);
-                //         fuelLayer.addLayer(L.marker(getRandomLatLng(mymap)));
-                //         mymap.addLayer(fuelLayer) 
-			    //         }
-		        // });
+                // END IMAGE OVERLAY GLOBEN
+                // FUEL STATIONS
 
                 const fuelLayer = L.markerClusterGroup();
 
@@ -346,6 +329,9 @@
 
                 mymap.addLayer(fuelLayer);
 
+                // END FUEL STATIONS
+                // WEATHER
+
                 var cities = [
                     { name: "Falun", coords: [60.60580472861724, 15.63369720593686] },
                     { name: "Borlänge", coords: [60.48368089294031, 15.430147102186696] },
@@ -357,18 +343,41 @@
                 const apiKey = '348f0c4a77d2eebd3718ea3136e113a4';
 
                 cities.forEach(city => {
-                    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.coords[0]}&lon=${city.coords[1]}&appid=${apiKey}&units=metric`;
-                    fetch(url)
+                    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${city.coords[0]}&lon=${city.coords[1]}&appid=${apiKey}&units=metric`;
+                    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${city.coords[0]}&lon=${city.coords[1]}&appid=${apiKey}&units=metric`;
+                    fetch(weatherUrl)
                         .then(response => response.json())
                         .then(data => { 
-                            const temp = data.main.temp;
-                            const desc = data.weather[0].description;
-                            const iconCode = data.weather[0].icon;
-                            const iconUrl = `http://openweathermap.org/img/w/${iconCode}.png`;
+                            const currentTemp = data.main.temp;
+                            const currentDesc = data.weather[0].description;
+                            const currentIconUrl = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
                             const marker = L.marker(city.coords, {icon: cloudIcon}).addTo(mymap);
-                            marker.bindPopup(`<h3>${city.name}</h3><p>Temperature: ${temp}°C<br>Description: ${desc}</p><img src="${iconUrl}">`);
+                            marker.bindPopup(`<h3>${city.name}</h3><p>Temperature: ${currentTemp}°C<br>Description: ${currentDesc}</p><img src="${currentIconUrl}">`);
+                            marker.on('click', function (e) {
+                                fetch(forecastUrl)
+                                .then(response => response.json())
+                                .then(data => {
+                                    let sidebarWeather = `<h1>${city.name}</h1>`;
+                                    sidebarWeather += `<p>Current Temperature: ${currentTemp}°C</p>`;
+                                    sidebarWeather += `<p>Weather: ${currentDesc}</p>`;
+                                    sidebarWeather += `<img src="${currentIconUrl}" alt="Current Weather Icon"><h2>Forecast</h2>`;
+
+                                    data.list.forEach(forecast => {
+                                        const forecastTemp = forecast.main.temp;
+                                        const forecastDesc = forecast.weather[0].description;
+                                        const forecastIconUrl = `http://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
+                                        sidebarWeather += `<p>${forecast.dt_txt}: ${forecastTemp}°C, ${forecastDesc} <img src="${forecastIconUrl}" alt="Weather Icon"></p>`;
+                                    });
+                                    sidebar.show()
+                                    sidebar.setContent(sidebarWeather);
+                                    
+                                })
+                            })
                         });
-                }); s
+                });
+
+                // END WEATHER
+                // BUTTON CLICK FUNCTIONS
 
                 // setView max 18
                 $("#btnSater").click(function(){
@@ -387,8 +396,8 @@
                     mymap.setView([59.29356499477762, 18.083123473195176], 18);
                 })
 
-                // END BUTTON CLICK FUNCTIONS            
-            });            
+                // END BUTTON CLICK FUNCTIONS   
+            });                    
        </script>
     </body>
 </html>
