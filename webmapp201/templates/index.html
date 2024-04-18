@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Webmapp 201</title>
+        <title>Inlämniningsuppgift 1</title>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='src/leaflet.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='src/css/bootstrap.css') }}">
@@ -76,7 +76,6 @@
             var ctlSlidebar;
             var sample = L.geoJson(sample);
             var sample1 = L.geoJson(sample1);
-            
            
             $(document).ready(function(){
                 mymap = L.map("mapdiv", {center:[60.34640783388847, 15.746372005989052], zoom:13});
@@ -97,32 +96,63 @@
                 
                 // ICONS
 
-                var iconUrls = {
+                const iconUrls = {
                     blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
                     pumpIcon: "{{ url_for('static', filename='pump.svg') }}",
                     cloudIcon: "{{ url_for('static', filename='cloud.svg') }}"
                 };   
                             
-                var blackIcon = L.icon({
+                const blackIcon = L.icon({
                     iconUrl: iconUrls.blackIcon,
                     iconSize:     [32, 37], 
                     iconAnchor:   [32, 37], 
                     popupAnchor:  [0, -30] 
                 });
 
-                var pumpIcon = L.icon({
+                const pumpIcon = L.icon({
                     iconUrl: iconUrls.pumpIcon,
                     iconSize:     [32, 37], 
                     iconAnchor:   [32, 37],
                     popupAnchor:  [0, -30] 
                 });
 
-                var cloudIcon = L.icon({
+                const cloudIcon = L.icon({
                     iconUrl: iconUrls.cloudIcon,
                     iconSize:     [32, 37], 
                     iconAnchor:   [16, 37], 
                     popupAnchor:  [0, -37] 
                 });
+
+
+                const clusterPoints = {{points | tojson | safe}};
+                const clusterIcons = {{ icons | tojson | safe }};
+
+                // CLUSTER POINTS
+                clusterPoints.forEach(function(point) {
+                    const clusterId = point.cluster;
+                    const iconUrl = clusterIcons[clusterId.toString()];
+                    const clusterIcon = L.icon({
+                        iconUrl: iconUrl,
+                        iconSize:     [32, 37], 
+                        iconAnchor:   [16, 37], 
+                        popupAnchor:  [0, -37] 
+                    
+                    }); 
+                    L.marker([point.ycoord, point.xcoord], {icon: clusterIcon})
+                    .addTo(mymap)
+                    .bindPopup('Cluster: ' + point.cluster);
+                });
+                // END CLUSTER POINTS
+
+                // const clusterColors = ["blue", "pink", "red", "brown"]
+                // const clusterIcons = clusterColors.map(color => {
+                //     return L.icon({
+                //         iconUrl: '{{ url_for("static", filename="cluster + color + .svg") }}',
+                //         iconSize:     [32, 37], 
+                //         iconAnchor:   [16, 37], 
+                //         popupAnchor:  [0, -37] 
+                //     });
+                // }) 
 
                 // END ICONS
                 // MARKERS
@@ -397,7 +427,7 @@
                 })
 
                 // END BUTTON CLICK FUNCTIONS   
-            });                    
+            });
        </script>
     </body>
 </html>
