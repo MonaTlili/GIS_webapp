@@ -97,9 +97,9 @@
                 // ICONS
 
                 const iconUrls = {
-                    blackIcon: "{{ url_for('static', filename='map-marker.svg') }}",
-                    pumpIcon: "{{ url_for('static', filename='pump.svg') }}",
-                    cloudIcon: "{{ url_for('static', filename='cloud.svg') }}"
+                    blackIcon: "{{ url_for('static', filename='/src/icons/map-marker.svg') }}",
+                    pumpIcon: "{{ url_for('static', filename='/src/icons/pump.svg') }}",
+                    cloudIcon: "{{ url_for('static', filename='/src/icons/cloud.svg') }}"
                 };   
                             
                 const blackIcon = L.icon({
@@ -124,8 +124,11 @@
                 });
 
 
+
+
                 const clusterPoints = {{points | tojson | safe}};
                 const clusterIcons = {{ icons | tojson | safe }};
+
 
                 // CLUSTER POINTS
                 clusterPoints.forEach(function(point) {
@@ -142,18 +145,8 @@
                     .addTo(mymap)
                     .bindPopup('Cluster: ' + point.cluster);
                 });
+
                 // END CLUSTER POINTS
-
-                // const clusterColors = ["blue", "pink", "red", "brown"]
-                // const clusterIcons = clusterColors.map(color => {
-                //     return L.icon({
-                //         iconUrl: '{{ url_for("static", filename="cluster + color + .svg") }}',
-                //         iconSize:     [32, 37], 
-                //         iconAnchor:   [16, 37], 
-                //         popupAnchor:  [0, -37] 
-                //     });
-                // }) 
-
                 // END ICONS
                 // MARKERS
 
