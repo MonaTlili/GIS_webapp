@@ -14,7 +14,6 @@ def home():
     kmeans = KMeans(n_init=20, n_clusters=k, random_state=0)
     df["cluster"] = kmeans.fit_predict(data)
     centroids = kmeans.cluster_centers_
-    print(centroids) 
 
     points = df.to_dict(orient="records")
     cluster_centroids = [{"xcoord": center[0], "ycoord": center[1], "type": "centroid"} for center in centroids]

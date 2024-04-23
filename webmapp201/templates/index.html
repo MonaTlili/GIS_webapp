@@ -49,40 +49,33 @@
         </style>
     </head>
     <body>
-       <div id="mapdiv" class="col-md-9"></div>
+        <div id="mapdiv" class="col-md-9"></div>
         <!-- BUTTONS -->
-       <div id="side-bar" class="col-md-3"><h2>My Map</h2>
-            <button id="l1">layer1</button>
-            <button id="l2">layer2</button>
-            <button id="btnSater" class="btn btn-primary btn-block">ZoomToSäter</button>
-            <button id="btnSaterAsenvagen" class="btn btn-primary btn-block">ZoomToÅsenvägen</button>
-            <button id="btnBagarn" class="btn btn-primary btn-block">ZoomToBagarn</button>
-            <button id="btnGlobe" class="btn btn-primary btn-block">ZoomToGlöben</button>
-       </div>
-       <!-- END BUTTONS -->
-       
-       <!-- SIDEBAR -->
-       <div id="sidebar"><h1>Information</h1>
-       </div>
-       <!-- END SIDEBAR -->
+        <div id="side-bar" class="col-md-3"><h2>Group 8's map:</h2>
+            <button id="btnSater" class="btn btn-primary btn-block m-1">ZoomToSäter</button>
+            <button id="btnSaterAsenvagen" class="btn btn-primary btn-block m-1">ZoomToÅsenvägen</button>
+            <button id="btnBagarn" class="btn btn-primary btn-block m-1">ZoomToBagarn</button>
+            <button id="btnGlobe" class="btn btn-primary btn-block m-1">ZoomToGlöben</button>
+            <button id="btnSuperMarkets" class="btn btn-primary btn-block m-1">SuperMarkets</button>
+            <button id="btnFuel" class="btn btn-primary btn-block m-1">Fuel</button>   
+            <button id="btnSchools" class="btn btn-primary btn-block m-1">Schools</button>
+            <button id="btnWeather" class="btn btn-primary btn-block m-1">Weather</button>
+        </div>
+        <!-- END BUTTONS -->
         
-       <script>
-            var mymap; 
-            var lyrOSM; 
-            var mrkCurrentLocation;
-            var ctlZoomslider;
-            var swedishlayer = L.geoJson(swedish_counties);
-            var countrieslayer
-            var ctlSlidebar;
-            var sample = L.geoJson(sample);
-            var sample1 = L.geoJson(sample1);
+        <!-- SIDEBAR -->
+        <div id="sidebar"><h1>Information</h1></div>
+        <!-- END SIDEBAR -->
+        
+        <script>
            
+
             $(document).ready(function(){
-                mymap = L.map("mapdiv", {center:[60.34640783388847, 15.746372005989052], zoom:13});
-                lyrOSM= L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+                const mymap = L.map("mapdiv", {center:[60.34640783388847, 15.746372005989052], zoom:13});
+                const lyrOSM= L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
                 mymap.addLayer(lyrOSM);
                 
-                ctlZoomslider = L.control.zoomslider({position:"topright"}).addTo(mymap);
+                const ctlZoomslider = L.control.zoomslider({position:"topright"}).addTo(mymap);
 
                 const controlCoords = new L.Control.Coordinates();
                 controlCoords.addTo(mymap);
@@ -91,11 +84,11 @@
                     controlCoords.setCoordinates(e);
                 });
                 
-                var sidebar = L.control.sidebar("sidebar", {position: "left"});
+                const sidebar = L.control.sidebar("sidebar", {position: "left"});
                 mymap.addControl(sidebar);
                 
-                // ICONS
 
+                // ICONS
                 const iconUrls = {
                     blackIcon: "{{ url_for('static', filename='/src/icons/map-marker.svg') }}",
                     pumpIcon: "{{ url_for('static', filename='/src/icons/pump.svg') }}",
@@ -130,12 +123,16 @@
                     iconAnchor:   [16, 37], 
                     popupAnchor:  [0, -37] 
                 });
+                // END ICONS
 
                 // CLUSTER POINTS
 
-                const clusterPoints = {{points | tojson | safe}};
+                const schoolLayer = L.layerGroup();
+
+                const clusterPoints = {{ points | tojson | safe }};
                 const clusterIcons = {{ icons | tojson | safe }};
-                const clusterCentroids = {{centroids | tojson | safe}};
+                const clusterCentroids = {{ centroids | tojson | safe }};
+
                 
                 clusterPoints.forEach(function(point) {
                     const clusterId = point.cluster;
@@ -148,48 +145,49 @@
                     
                     }); 
                     L.marker([point.ycoord, point.xcoord], {icon: clusterIcon})
-                    .addTo(mymap)
+                    .addTo(schoolLayer)
                     .bindPopup('Cluster: ' + point.cluster);
                 });
 
+
                 clusterCentroids.forEach(function(centroid) {
                     L.marker([centroid.ycoord, centroid.xcoord], {icon: centroidIcon})
-                    .addTo(mymap)
+                    .addTo(schoolLayer)
                     .bindPopup('Centroid: ' + centroid.cluster);
                 });
 
                 // END CLUSTER POINTS
-                // END ICONS
                 // MARKERS
 
+                const saterAttractionsLayer = L.layerGroup()
                 const popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: blackIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
                 
                 
-                const popMentalvardMuseum = L.marker([60.34219053393169, 15.711821630690526],{icon: blackIcon}).addTo(mymap);
+                const popMentalvardMuseum = L.marker([60.34219053393169, 15.711821630690526],{icon: blackIcon}).addTo(saterAttractionsLayer);
                 popMentalvardMuseum.on('click', function(e){
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Mentalvårdsmuseet!</h3><p>Mentalvårdsmuseet är beläget vid Säters sjukhus och berättar om den tid då största delen av psykiatrins verksamhet bedrevs på stora mentalsjukhus. Den här webbplatsen riktar sig till dig som vill besöka oss eller veta mer om museets historia och samlingar.<p><img src={{ url_for('static', filename='img/mentalvardmuseumsater.jpg') }} width='150px'>");
                 });
                 
-                const popSaterGrillen = L.marker([60.34709575205177, 15.75163681099822],{icon: blackIcon}).addTo(mymap);
+                const popSaterGrillen = L.marker([60.34709575205177, 15.75163681099822],{icon: blackIcon}).addTo(saterAttractionsLayer);
                 popSaterGrillen.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Säter Grillen!</h3><p>Upplev gourmetnivå med vår signatur Mexikanska pizza! Utforska smakens mångfald😉🍕🌶️ Varning: kan orsaka beroende av kryddig godhet! 😋<p><img src={{ url_for('static', filename='img/pizzeria.jpg') }} width='150px'>");
                 });
                 
-                const popKlockarSkolan = L.marker([60.346646945534005, 15.740775937986164],{icon: blackIcon}).addTo(mymap);
+                const popKlockarSkolan = L.marker([60.346646945534005, 15.740775937986164],{icon: blackIcon}).addTo(saterAttractionsLayer);
                 popKlockarSkolan.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Klockarskolan!</h3><p>Det här är Klockarskolan - Säters kommuns skola för elever i årskurs 7-9. För oss är det viktigt att DU upplever att du LYCKAS med ditt skolarbete och att vi hjälps åt.<p><img src={{ url_for('static', filename='img/klockarskolan.png') }} width='150px'>");
                 });
 
-                const popSaterDalen = L.marker([60.350030240931474, 15.759631888742012],{icon: blackIcon}).addTo(mymap);
+                const popSaterDalen = L.marker([60.350030240931474, 15.759631888742012],{icon: blackIcon}).addTo(saterAttractionsLayer);
                 popSaterDalen.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Säterdalen!</h3><p>Säterdalen är ett omväxlande landskap med branta raviner och böljande skogsbackar. På ravinens botten slingrar sig Ljusterån fram. En vandringsled går genom dalen längs med Ljusteråns stränder. Här finns en unik och fantastiskt vacker natur, men även en kunglig rastplats!<p><img src={{ url_for('static', filename='img/saterdalen.png') }} width='150px'>");
                 });
              
-                const popSaterKyrka = L.marker([60.345466899686755, 15.746454147785553],{icon: blackIcon}).addTo(mymap);
+                const popSaterKyrka = L.marker([60.345466899686755, 15.746454147785553],{icon: blackIcon}).addTo(saterAttractionsLayer);
                 popSaterKyrka.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Säters kyrka!</h3><p>Säters kyrka i Säter är församlingskyrka för Säterbygdens församling i Västerås stift. Den nuvarande kyrkan byggdes 1778–1779. Tornet byttes dock ut 1806–1807, då det stod på ostadig grund. 1811 fastställdes hur orgelfasaden och altaret skulle se ut.<br><br>Tidigare stod en annan stenkyrka på platsen. Den invigdes på hösten 1635 och ersatte då en träkyrka som var i bruk 1628–1635. Det visade sig dock att denna kyrka var undermåligt byggd och man rev den år 1778. <br><br> I anslutning till kyrkan, på andra sidan gatan, ligger församlingshemmet Coriandergården. Denna har fått sitt namn av Säters första kyrkoherde Magnus Andræ Coriander, verksam 1636–1663, vilken även har gett namn åt kyrkokören Corianderkören. <p><img src={{ url_for('static', filename='img/saterskyrka.png') }} width='150px'>");
@@ -206,7 +204,7 @@
 
                 // POLYLINE MEASURE LINES
 
-                let polyLine = L.control.polylineMeasure({showBearings:true, clearMeasurementsOnStop: false, showUnitControl: true}).addTo(mymap);
+                const polyLine = L.control.polylineMeasure({showBearings:true, clearMeasurementsOnStop: false, showUnitControl: true}).addTo(mymap);
 
                 const saterLines = [
                     {lat: 60.34219053393169, lng:15.711821630690526},
@@ -242,93 +240,33 @@
                     [60.34087428142849, 15.75619275706766]
                 ];
 
-                const asenVagLine = L.polyline(asenvag_points, { color: 'red'}).addTo(mymap).bindPopup("Åsen vägen").bindPopup("<h3>Åsen vägen</h3><img src={{ url_for('static', filename='/src/images/skogsvag.jpg') }} width='150px'>");
+                const asenVagLine = L.polyline(asenvag_points, { color: 'red'}).addTo(mymap).bindPopup("Åsen vägen").bindPopup("<h3>Åsen vägen</h3><img src={{ url_for('static', filename='/src/images/AsenVagenSater.jpg') }} width='150px'>");
 
                 // END POLYLINE
-                // VIJAYS SWEDEN LAYER
-
-                document.getElementById("l1").addEventListener("click", sweden);
-
-                function sweden(){
-                    if(mymap.hasLayer(swedishlayer)){
-                        mymap.removeLayer(swedishlayer);
-                        
-                        sidebar.hide();
-                        
-                    } else {
-                        swedishlayer.addTo(mymap);
-                        
-                        sidebar.show();
-                    }
-                    
-                };
-
-                // END VIJAYS SWEDEN LAYER
-                // VIJAYS COUNTRIES LAYER
- 
-                countrieslayer = L.geoJson(countries, {
-                    onEachFeature: function (feature, layer) {
-                        layer.bindPopup(feature.properties.name);
-			            }
-		        });
-
-		        document.getElementById("l2").addEventListener("click", c_layers);
-                
-                function c_layers(){
-                    if(mymap.hasLayer(countrieslayer)){
-                        mymap.removeLayer(countrieslayer);
-                    } 
-                    else {
-                        countrieslayer.addTo(mymap);
-                    }
-                };
-                
-                // END VIJAYS COUNTRIES LAYER
                 // SUPERMARKET FUNCTIONS
 
                 const supermarketBuffers = [];
-                
+
                 const supermarketLayer = L.geoJson(supermarket, {
                     onEachFeature: function (feature, layer) {
-                        layer.bindPopup(feature.properties.name).addTo(mymap);
+                        layer.bindPopup(feature.properties.name);
                         const buffer = turf.buffer(feature, 1, {units: 'kilometers'});
                      
-                        let bufferLayer = L.geoJSON(buffer, {
+                        const bufferLayer = L.geoJSON(buffer, {
                             style:{
                                 color:'orange', 
                                 dashArray:'10', 
                                 fillOpacity:0.3
                             }
-                        }).addTo(mymap);
+                        });
 
                         supermarketBuffers.push({
                             feature: feature,
                             layer: layer,
                             buffer: buffer,
                             bufferLayer: bufferLayer
-                        })
-
-                        layer.addTo(mymap); 
-                    }
-                    
-                });
-
-                supermarketBuffers.forEach((supermarket, index) => {
-                    let overlaps = false;
-                    supermarketBuffers.forEach((otherSupermarket, otherIndex) => {
-                        if (index !== otherIndex && turf.intersect(supermarket.buffer, otherSupermarket.buffer)) {
-                            overlaps = true;
-                        }   
-                    });
-
-                    if (!overlaps) {
-                        supermarket.bufferLayer.setStyle({
-                            color: 'purple',
-                            fillColor: 'purple',
-                            fillOpacity: 0.3
                         });
-                        supermarket.layer.bindPopup(supermarket.feature.properties.name + " - Not overlapping"); 
-                    }   
+                    }       
                 });
                 
                 // END SUPERMARKET FUNCTIONS
@@ -347,7 +285,7 @@
 
                 // END IMAGE OVERLAY GLOBEN
                 // FUEL STATIONS
-
+            
                 const fuelLayer = L.markerClusterGroup();
 
                 L.geoJson(fuel, {
@@ -362,12 +300,12 @@
                     }
                 }).addTo(fuelLayer);
 
-                mymap.addLayer(fuelLayer);
-
                 // END FUEL STATIONS
                 // WEATHER
 
-                var cities = [
+                const weatherLayer = L.layerGroup();
+
+                const cities = [
                     { name: "Falun", coords: [60.60580472861724, 15.63369720593686] },
                     { name: "Borlänge", coords: [60.48368089294031, 15.430147102186696] },
                     { name: "Gagnef", coords: [60.59086617909959, 15.07043173564424] },
@@ -386,7 +324,7 @@
                             const currentTemp = data.main.temp;
                             const currentDesc = data.weather[0].description;
                             const currentIconUrl = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-                            const marker = L.marker(city.coords, {icon: cloudIcon}).addTo(mymap);
+                            const marker = L.marker(city.coords, {icon: cloudIcon}).addTo(weatherLayer);
                             marker.bindPopup(`<h3>${city.name}</h3><p>Temperature: ${currentTemp}°C<br>Description: ${currentDesc}</p><img src="${currentIconUrl}">`);
                             marker.on('click', function (e) {
                                 fetch(forecastUrl)
@@ -404,11 +342,10 @@
                                         sidebarWeather += `<p>${forecast.dt_txt}: ${forecastTemp}°C, ${forecastDesc} <img src="${forecastIconUrl}" alt="Weather Icon"></p>`;
                                     });
                                     sidebar.show()
-                                    sidebar.setContent(sidebarWeather);
-                                    
+                                    sidebar.setContent(sidebarWeather);   
                                 })
                             })
-                        });
+                        })
                 });
 
                 // END WEATHER
@@ -416,7 +353,12 @@
 
                 // setView max 18
                 $("#btnSater").click(function(){
-                    mymap.setView([60.34640783388847, 15.746372005989052], 15);
+                    if (mymap.hasLayer(saterAttractionsLayer)) {
+                        mymap.removeLayer(saterAttractionsLayer);
+                    } else {
+                        mymap.addLayer(saterAttractionsLayer);
+                    }
+                    mymap.setView([60.3440, 15.7378], 15);
                 })
 
                 $("#btnSaterAsenvagen").click(function(){
@@ -430,9 +372,73 @@
                 $("#btnGlobe").click(function(){
                     mymap.setView([59.29356499477762, 18.083123473195176], 18);
                 })
+                
+
+                $("#btnSuperMarkets").click(function() {
+                    if(mymap.hasLayer(supermarketLayer)) {
+                        mymap.removeLayer(supermarketLayer);
+                        supermarketBuffers.forEach((supermarket) => {
+                            if (mymap.hasLayer(supermarket.bufferLayer)) {
+                                mymap.removeLayer(supermarket.bufferLayer);
+                            }
+                        });
+                    } else {
+                        mymap.addLayer(supermarketLayer);
+
+                        supermarketBuffers.forEach((supermarket, index) => {
+                            mymap.addLayer(supermarket.bufferLayer);
+                            let overlaps = false;
+                            supermarketBuffers.forEach((otherSupermarket, otherIndex) => {
+                                if (index !== otherIndex && turf.intersect(supermarket.buffer, otherSupermarket.buffer)) {
+                                    overlaps = true;
+                                }
+                            });
+
+                            if (!overlaps) {
+                                supermarket.bufferLayer.setStyle({
+                                    color: 'purple',
+                                    fillColor: 'purple',
+                                    fillOpacity: 0.3
+                                });
+                                supermarket.layer.bindPopup(supermarket.feature.properties.name + " - Not overlapping");
+                            }
+                        });
+                    }
+                    mymap.setView([59.8565, 17.6427], 9);
+                });
+
+
+                $("#btnFuel").click(function() {
+                    if(mymap.hasLayer(fuelLayer)) {
+                        mymap.removeLayer(fuelLayer);
+                    } else {
+                        mymap.addLayer(fuelLayer);
+                    }
+                    mymap.setView([59.3338, 17.9740], 10)
+                }) 
+                
+                $("#btnSchools").click(function() {
+                    if(mymap.hasLayer(schoolLayer)) {
+                        mymap.removeLayer(schoolLayer);
+                    } else { 
+                        mymap.addLayer(schoolLayer);
+                    }
+                    mymap.setView([59.3304, 18.0440], 10)
+                })
+
+                $("#btnWeather").click(function() {
+                    if(mymap.hasLayer(weatherLayer)) {
+                        mymap.removeLayer(weatherLayer);
+                    } else {
+                        mymap.addLayer(weatherLayer);
+                    }
+                    mymap.setView([60.3650, 15.5594], 9)
+                })
 
                 // END BUTTON CLICK FUNCTIONS   
-            });
-       </script>
+
+            }); 
+
+        </script>
     </body>
 </html>
