@@ -99,7 +99,8 @@
                 const iconUrls = {
                     blackIcon: "{{ url_for('static', filename='/src/icons/map-marker.svg') }}",
                     pumpIcon: "{{ url_for('static', filename='/src/icons/pump.svg') }}",
-                    cloudIcon: "{{ url_for('static', filename='/src/icons/cloud.svg') }}"
+                    cloudIcon: "{{ url_for('static', filename='/src/icons/cloud.svg') }}",
+                    centroidIcon: "{{ url_for('static', filename='/src/icons/centroid.svg') }}"
                 };   
                             
                 const blackIcon = L.icon({
@@ -123,14 +124,19 @@
                     popupAnchor:  [0, -37] 
                 });
 
+                const centroidIcon = L.icon({
+                    iconUrl: iconUrls.centroidIcon,
+                    iconSize:     [32, 37], 
+                    iconAnchor:   [16, 37], 
+                    popupAnchor:  [0, -37] 
+                });
 
-
+                // CLUSTER POINTS
 
                 const clusterPoints = {{points | tojson | safe}};
                 const clusterIcons = {{ icons | tojson | safe }};
-
-
-                // CLUSTER POINTS
+                const clusterCentroids = {{centroids | tojson | safe}};
+                
                 clusterPoints.forEach(function(point) {
                     const clusterId = point.cluster;
                     const iconUrl = clusterIcons[clusterId.toString()];
@@ -144,6 +150,12 @@
                     L.marker([point.ycoord, point.xcoord], {icon: clusterIcon})
                     .addTo(mymap)
                     .bindPopup('Cluster: ' + point.cluster);
+                });
+
+                clusterCentroids.forEach(function(centroid) {
+                    L.marker([centroid.ycoord, centroid.xcoord], {icon: centroidIcon})
+                    .addTo(mymap)
+                    .bindPopup('Centroid: ' + centroid.cluster);
                 });
 
                 // END CLUSTER POINTS
