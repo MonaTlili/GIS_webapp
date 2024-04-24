@@ -105,16 +105,13 @@
                     popupAnchor:  [0, -37] 
                 });
                 // END ICONS
-
                 // CLUSTER POINTS
-
                 const schoolLayer = L.layerGroup();
 
                 const clusterPoints = {{ points | tojson | safe }};
                 const clusterIcons = {{ icons | tojson | safe }};
                 const clusterCentroids = {{ centroids | tojson | safe }};
 
-                
                 clusterPoints.forEach(function(point) {
                     const clusterId = point.cluster;
                     const iconUrl = clusterIcons[clusterId.toString()];
@@ -123,7 +120,6 @@
                         iconSize:     [32, 37], 
                         iconAnchor:   [16, 37], 
                         popupAnchor:  [0, -37] 
-                    
                     }); 
                     L.marker([point.ycoord, point.xcoord], {icon: clusterIcon})
                     .addTo(schoolLayer)
@@ -134,7 +130,7 @@
                 clusterCentroids.forEach(function(centroid) {
                     L.marker([centroid.ycoord, centroid.xcoord], {icon: centroidIcon})
                     .addTo(schoolLayer)
-                    .bindPopup('Centroid: ' + centroid.cluster);
+                    .bindPopup('Centroid for cluster: ' + centroid.clusterId);
                 });
 
                 // END CLUSTER POINTS

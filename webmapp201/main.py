@@ -16,7 +16,7 @@ def home():
     centroids = kmeans.cluster_centers_
 
     points = df.to_dict(orient="records")
-    cluster_centroids = [{"xcoord": center[0], "ycoord": center[1], "type": "centroid"} for center in centroids]
+    cluster_centroids = [{"xcoord": center[0], "ycoord": center[1], "clusterId": i} for i, center in enumerate(centroids)]
 
     cluster_colors = ["red", "pink", "blue", "orange", "purple", "yellow"]
     icons = {str(i): url_for('static', filename=f'/src/icons/cluster{cluster_colors[i]}.svg') for i in range(k)}
