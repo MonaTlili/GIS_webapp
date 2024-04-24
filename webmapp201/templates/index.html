@@ -48,8 +48,18 @@
         <div id="sidebar"><h1>Information</h1></div>
         <!-- END SIDEBAR -->
         
+
+        <script type="text/javascript">
+            const clusterPoints = {{ points | tojson | safe }};
+            const clusterIcons = {{ icons | tojson | safe }};
+            const clusterCentroids = {{ centroids | tojson | safe }};
+        </script>
+
         <script>
-           
+
+            console.log(clusterPoints);
+            console.log(clusterIcons);
+            console.log(clusterCentroids);
 
             $(document).ready(function(){
                 const mymap = L.map("mapdiv", {center:[60.34640783388847, 15.746372005989052], zoom:13});
@@ -108,10 +118,6 @@
                 // CLUSTER POINTS
                 const schoolLayer = L.layerGroup();
 
-                const clusterPoints = {{ points | tojson | safe }};
-                const clusterIcons = {{ icons | tojson | safe }};
-                const clusterCentroids = {{ centroids | tojson | safe }};
-
                 clusterPoints.forEach(function(point) {
                     const clusterId = point.cluster;
                     const iconUrl = clusterIcons[clusterId.toString()];
@@ -123,16 +129,14 @@
                     }); 
                     L.marker([point.ycoord, point.xcoord], {icon: clusterIcon})
                     .addTo(schoolLayer)
-                    .bindPopup('Cluster: ' + point.cluster);
+                    .bindPopup('School name: ' + point.Name + '<br>Cluster: ' + point.cluster);
                 });
-
 
                 clusterCentroids.forEach(function(centroid) {
                     L.marker([centroid.ycoord, centroid.xcoord], {icon: centroidIcon})
                     .addTo(schoolLayer)
-                    .bindPopup('Centroid for cluster: ' + centroid.clusterId);
+                    .bindPopup('Centroid for cluster: ' + centroid.clusterNum);
                 });
-
                 // END CLUSTER POINTS
                 // MARKERS
 
