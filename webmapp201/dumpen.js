@@ -108,3 +108,5 @@
                 // };
                 
                 // END VIJAYS COUNTRIES LAYER
+
+                // cluster_centroids = [{"xcoord": center[0], "ycoord": center[1], "type": "centroid"} for center in centroids]
