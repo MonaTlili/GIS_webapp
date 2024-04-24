@@ -13,6 +13,7 @@
         
         <link rel="stylesheet" href="{{ url_for('static', filename='dist/MarkerCluster.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='dist/MarkerCluster.Default.css') }}">
+        <link rel="stylesheet" href="{{url_for('static', filename= 'src/css/styles.css')}}">
      
          
         <script src="{{ url_for('static', filename='src/leaflet-src.js') }}"></script>
@@ -24,29 +25,9 @@
         <script src="{{ url_for('static', filename='src/plugins/Leaflet.PolylineMeasure.js') }}"></script>
         <script src="{{ url_for('static', filename='src/plugins/Control.Coordinates.js') }}"></script>
 
-        <script src="{{ url_for('static', filename='swedish_counties.js') }}"></script>
-        <script src="{{ url_for('static', filename='countries.js') }}"></script>
         <script src="{{ url_for('static', filename='fuel.js') }}"></script>
         <script src="{{ url_for('static', filename='supermarket.js') }}"></script>
        
-        <style>
-            #mapdiv {
-                height: 100vh;
-            }  
-            
-            #side-bar {
-			position: absolute;
-			z-index: 1000;
-			background: rgba(255,255,255,0.7);
-			padding: 10px;
-			right: 0;
-            top: 0;
-			margin: 10px;
-			border-radius: 10px;
-			min-height: 200px;
-            }
-                        
-        </style>
     </head>
     <body>
         <div id="mapdiv" class="col-md-9"></div>
@@ -159,35 +140,41 @@
                 // END CLUSTER POINTS
                 // MARKERS
 
-                const saterAttractionsLayer = L.layerGroup()
-                const popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: blackIcon}).addTo(mymap).bindPopup("Säter").bindPopup("<h3>Welcome to Säter!</h3><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
+                const saterLocLayer = L.layerGroup()
+                const popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: blackIcon})
+                .addTo(mymap)
+                .bindPopup("<h3>Welcome to Säter!</h3><p>Säters kommun ligger i södra delen av landskapet Dalarna (Dalarnas län).<br><br>Kommunen gränsar i öster till Hedemora och i väster till Borlänge och Falun, i söder till Smedjebacken och i norr till Falun. Residensstad är Falun och Dalarna tillhör Västerås stift.<br><br>Förutom Säters centralort så finns kommundelarna Gustafs, Stora Skedvi och Silvberg. Nu bor cirka 11 000 människor i kommunen, varav omkring hälften i centralorten Säter. Befolkningsutvecklingen är positiv.<br><br>Kommunen har en yta på 574 km². Största delen av kommunen är skogs- och jordbruksmarker.<br><br>Kommunen bildades 1971 av Säters stad, Gustafs och St. Skedvi kommuner. Säters stad bestod då av Säters stad och socken, Gustafs kommun innehöll Gustafs och Silvbergs socknar.</p><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
                 
-                
-                const popMentalvardMuseum = L.marker([60.34219053393169, 15.711821630690526],{icon: blackIcon}).addTo(saterAttractionsLayer);
+                const popMentalvardMuseum = L.marker([60.34219053393169, 15.711821630690526],{icon: blackIcon})
+                .addTo(saterLocLayer);
                 popMentalvardMuseum.on('click', function(e){
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Mentalvårdsmuseet!</h3><p>Mentalvårdsmuseet är beläget vid Säters sjukhus och berättar om den tid då största delen av psykiatrins verksamhet bedrevs på stora mentalsjukhus. Den här webbplatsen riktar sig till dig som vill besöka oss eller veta mer om museets historia och samlingar.<p><img src={{ url_for('static', filename='img/mentalvardmuseumsater.jpg') }} width='150px'>");
                 });
                 
-                const popSaterGrillen = L.marker([60.34709575205177, 15.75163681099822],{icon: blackIcon}).addTo(saterAttractionsLayer);
+                const popSaterGrillen = L.marker([60.34709575205177, 15.75163681099822],{icon: blackIcon})
+                .addTo(saterLocLayer);
                 popSaterGrillen.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Säter Grillen!</h3><p>Upplev gourmetnivå med vår signatur Mexikanska pizza! Utforska smakens mångfald😉🍕🌶️ Varning: kan orsaka beroende av kryddig godhet! 😋<p><img src={{ url_for('static', filename='img/pizzeria.jpg') }} width='150px'>");
                 });
                 
-                const popKlockarSkolan = L.marker([60.346646945534005, 15.740775937986164],{icon: blackIcon}).addTo(saterAttractionsLayer);
+                const popKlockarSkolan = L.marker([60.346646945534005, 15.740775937986164],{icon: blackIcon})
+                .addTo(saterLocLayer);
                 popKlockarSkolan.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Klockarskolan!</h3><p>Det här är Klockarskolan - Säters kommuns skola för elever i årskurs 7-9. För oss är det viktigt att DU upplever att du LYCKAS med ditt skolarbete och att vi hjälps åt.<p><img src={{ url_for('static', filename='img/klockarskolan.png') }} width='150px'>");
                 });
 
-                const popSaterDalen = L.marker([60.350030240931474, 15.759631888742012],{icon: blackIcon}).addTo(saterAttractionsLayer);
+                const popSaterDalen = L.marker([60.350030240931474, 15.759631888742012],{icon: blackIcon})
+                .addTo(saterLocLayer);
                 popSaterDalen.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Säterdalen!</h3><p>Säterdalen är ett omväxlande landskap med branta raviner och böljande skogsbackar. På ravinens botten slingrar sig Ljusterån fram. En vandringsled går genom dalen längs med Ljusteråns stränder. Här finns en unik och fantastiskt vacker natur, men även en kunglig rastplats!<p><img src={{ url_for('static', filename='img/saterdalen.png') }} width='150px'>");
                 });
              
-                const popSaterKyrka = L.marker([60.345466899686755, 15.746454147785553],{icon: blackIcon}).addTo(saterAttractionsLayer);
+                const popSaterKyrka = L.marker([60.345466899686755, 15.746454147785553],{icon: blackIcon})
+                .addTo(saterLocLayer);
                 popSaterKyrka.on('click', function(e) {
                     sidebar.show();
                     sidebar.setContent("<h3>Welcome to Säters kyrka!</h3><p>Säters kyrka i Säter är församlingskyrka för Säterbygdens församling i Västerås stift. Den nuvarande kyrkan byggdes 1778–1779. Tornet byttes dock ut 1806–1807, då det stod på ostadig grund. 1811 fastställdes hur orgelfasaden och altaret skulle se ut.<br><br>Tidigare stod en annan stenkyrka på platsen. Den invigdes på hösten 1635 och ersatte då en träkyrka som var i bruk 1628–1635. Det visade sig dock att denna kyrka var undermåligt byggd och man rev den år 1778. <br><br> I anslutning till kyrkan, på andra sidan gatan, ligger församlingshemmet Coriandergården. Denna har fått sitt namn av Säters första kyrkoherde Magnus Andræ Coriander, verksam 1636–1663, vilken även har gett namn åt kyrkokören Corianderkören. <p><img src={{ url_for('static', filename='img/saterskyrka.png') }} width='150px'>");
@@ -201,10 +188,14 @@
                 });
                 
                 // END CLICK FUNCTION TO HIDE SIDEBAR
-
                 // POLYLINE MEASURE LINES
 
-                const polyLine = L.control.polylineMeasure({showBearings:true, clearMeasurementsOnStop: false, showUnitControl: true}).addTo(mymap);
+                let polyLineMeasureControl = L.control.polylineMeasure({
+                    position: 'topleft',
+                    showBearings:true, 
+                    clearMeasurementsOnStop: false, 
+                    showUnitControl: true
+                }).addTo(mymap);
 
                 const saterLines = [
                     {lat: 60.34219053393169, lng:15.711821630690526},
@@ -215,8 +206,6 @@
                     {lat: 60.34219053393169, lng:15.711821630690526}
                 ];
 
-                polyLine.seed([saterLines]);
-
                 // END POLYLINE MEASURE LINES
                 // POLYGON
                     
@@ -226,21 +215,22 @@
                     [60.40433498667086, 15.59616874097313],
                     [60.404436353035635, 15.595859742945398],
                     [60.404242531359486, 15.595568788598122] 
-                ]).addTo(mymap).bindPopup("Gustafs bröd").bindPopup("<h3>Gustafs bröd</h3><img src={{ url_for('static', filename='/img/gustafs_brod.png') }} width='150px'>");
+                ]).addTo(mymap)
+                .bindPopup("<h3>Gustafs bröd</h3><img src={{ url_for('static', filename='/img/gustafs_brod.png') }} width='150px'>");
 
                 // END POLYGON
                 // POLYLINE
 
-                const asenvag_points =  [
+                const asenVagLine = L.polyline([
                     [60.338360351490955, 15.7607417838101],
                     [60.338609894903215, 15.760586215682807],
                     [60.338795723864074, 15.760366274537317],
                     [60.34059820989227, 15.75711543699507],
                     [60.340717664209045, 15.756777478649568],
                     [60.34087428142849, 15.75619275706766]
-                ];
-
-                const asenVagLine = L.polyline(asenvag_points, { color: 'red'}).addTo(mymap).bindPopup("Åsen vägen").bindPopup("<h3>Åsen vägen</h3><img src={{ url_for('static', filename='/src/images/AsenVagenSater.jpg') }} width='150px'>");
+                ], { color: 'red' })
+                .addTo(mymap)
+                .bindPopup("<h3>Åsen vägen</h3><img src={{ url_for('static', filename='/img/AsenVagenSater.jpeg') }} width='150px'>");
 
                 // END POLYLINE
                 // SUPERMARKET FUNCTIONS
@@ -277,7 +267,7 @@
                     [59.2932,  18.0841]
                 ]);
 
-                const imageOverlayGloben = L.imageOverlay("{{url_for('static', filename='/img/GLOBEN.png')}}", globenBounds, {
+                const imageOverlayGloben = L.imageOverlay("{{ url_for('static', filename='/img/GLOBEN.png') }}", globenBounds, {
                     opacity: 0.8,
                     alt: 'Globen',
                     interactive: true
@@ -353,10 +343,12 @@
 
                 // setView max 18
                 $("#btnSater").click(function(){
-                    if (mymap.hasLayer(saterAttractionsLayer)) {
-                        mymap.removeLayer(saterAttractionsLayer);
+                    if (mymap.hasLayer(saterLocLayer)) {
+                        mymap.removeLayer(saterLocLayer);
+                        polyLineMeasureControl._clearAllMeasurements();
                     } else {
-                        mymap.addLayer(saterAttractionsLayer);
+                        mymap.addLayer(saterLocLayer); 
+                        polyLineMeasureControl.seed([saterLines]);
                     }
                     mymap.setView([60.3440, 15.7378], 15);
                 })
@@ -407,6 +399,7 @@
                     mymap.setView([59.8565, 17.6427], 9);
                 });
 
+                
 
                 $("#btnFuel").click(function() {
                     if(mymap.hasLayer(fuelLayer)) {
