@@ -186,12 +186,6 @@
                 });
                 // END MARKERS
 
-                // CLICK FUNCTION TO HIDE SIDEBAR
-                mymap.on('click', function() {
-                    sidebar.hide();
-                });
-                // END CLICK FUNCTION TO HIDE SIDEBAR
-
                 // POLYLINE MEASURE LINES
                 let polyLineMeasureControl = L.control.polylineMeasure({
                     position: 'topleft',
@@ -210,17 +204,6 @@
                 ];
                 // END POLYLINE MEASURE LINES
 
-                // POLYGON  
-                const gustafsBrodPoly = L.polygon([
-                    [60.40405873387609, 15.596026646989579],
-                    [60.40418349349315, 15.596434885259788],
-                    [60.40433498667086, 15.59616874097313],
-                    [60.404436353035635, 15.595859742945398],
-                    [60.404242531359486, 15.595568788598122] 
-                ]).addTo(mymap)
-                .bindPopup("<h3>Gustafs bröd</h3><p>Vi är ett litet bageri/caféer som ligger i Gustafs och Säter. Vi bakar allt inom bageri/kondtori</p><img src={{ url_for('static', filename='/img/gustafs_brod.png') }} width='150px'>");
-                // END POLYGON
-
                 // POLYLINE
                 const asenVagLine = L.polyline([
                     [60.338360351490955, 15.7607417838101],
@@ -233,6 +216,18 @@
                 .addTo(mymap)
                 .bindPopup("<h3>Åsen vägen</h3><p>Åsenvägen kopplar samman Säter's innerstad med bostadsområdet Åsen.</p><img src={{ url_for('static', filename='/img/AsenVagenSater.jpeg') }} width='150px'>");
                 // END POLYLINE
+
+
+                // POLYGON  
+                const gustafsBrodPoly = L.polygon([
+                    [60.40405873387609, 15.596026646989579],
+                    [60.40418349349315, 15.596434885259788],
+                    [60.40433498667086, 15.59616874097313],
+                    [60.404436353035635, 15.595859742945398],
+                    [60.404242531359486, 15.595568788598122] 
+                ]).addTo(mymap)
+                .bindPopup("<h3>Gustafs bröd</h3><p>Vi är ett litet bageri/caféer som ligger i Gustafs och Säter. Vi bakar allt inom bageri/kondtori</p><img src={{ url_for('static', filename='/img/gustafs_brod.png') }} width='150px'>");
+                // END POLYGON
 
                 // SUPERMARKET FUNCTIONS
                 const supermarketBuffers = [];
