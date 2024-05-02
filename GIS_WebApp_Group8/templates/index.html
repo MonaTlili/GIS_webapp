@@ -32,7 +32,7 @@
     <body>
         <div id="mapdiv" class="col-md-9"></div>
         <!-- BUTTONS -->
-        <div id="side-bar" class="col-md-3"><h2>Group 8's map:</h2>
+        <div id="sidebarRight" class="col-md-3"><h2>Group 8's map:</h2>
             <button id="btnSater" class="btn btn-primary btn-block m-1">ZoomToSäter</button>
             <button id="btnSaterAsenvagen" class="btn btn-primary btn-block m-1">ZoomToÅsenvägen</button>
             <button id="btnBagarn" class="btn btn-primary btn-block m-1">ZoomToBagarn</button>
@@ -138,6 +138,7 @@
 
                 // MARKERS
                 const saterLocLayer = L.layerGroup()
+
                 const popSater = L.marker([60.34640783388847, 15.746372005989052],{icon: blackIcon})
                 .addTo(mymap)
                 .bindPopup("<h3>Welcome to Säter!</h3><p>Säters kommun ligger i södra delen av landskapet Dalarna (Dalarnas län).<br><br>Kommunen gränsar i öster till Hedemora och i väster till Borlänge och Falun, i söder till Smedjebacken och i norr till Falun. Residensstad är Falun och Dalarna tillhör Västerås stift.<br><br>Förutom Säters centralort så finns kommundelarna Gustafs, Stora Skedvi och Silvberg. Nu bor cirka 11 000 människor i kommunen, varav omkring hälften i centralorten Säter. Befolkningsutvecklingen är positiv.<br><br>Kommunen har en yta på 574 km². Största delen av kommunen är skogs- och jordbruksmarker.<br><br>Kommunen bildades 1971 av Säters stad, Gustafs och St. Skedvi kommuner. Säters stad bestod då av Säters stad och socken, Gustafs kommun innehöll Gustafs och Silvbergs socknar.</p><img src={{ url_for('static', filename='img/Tokig_i_sater.gif') }} width='150px'>");
