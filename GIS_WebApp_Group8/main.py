@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route("/")
 def home():
 
-    df= pd.read_csv("webmapp201/static/school_locations.csv")
+    df= pd.read_csv("GIS_WebApp_Group8/static/school_locations.csv")
     data = df[["xcoord", "ycoord"]]
     k = 6
 
