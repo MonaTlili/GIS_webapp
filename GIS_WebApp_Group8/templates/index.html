@@ -62,18 +62,25 @@
                 const lyrOSM= L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
                 mymap.addLayer(lyrOSM);
                 
+                //PLUGINS
                 const ctlZoomslider = L.control.zoomslider({position:"topright"}).addTo(mymap);
 
                 const controlCoords = new L.Control.Coordinates();
                 controlCoords.addTo(mymap);
-
+            
                 mymap.on('click', function(e) {
                     controlCoords.setCoordinates(e);
                 });
-                
+                //END PLUGINS
+
+                //SIDEBAR
                 const sidebar = L.control.sidebar("sidebar", {position: "left"});
                 mymap.addControl(sidebar);
-                
+
+                mymap.on('click', function() {
+                    sidebar.hide();
+                });
+                //END SIDEBAR
 
                 // ICONS
                 const iconUrls = {
